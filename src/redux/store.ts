@@ -1,5 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
-import minionsReducer from './minionsSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import minionsReducer from "./minionsSlice";
+
 
 export const store = configureStore({
   reducer: { minions: minionsReducer },
