@@ -11,27 +11,29 @@ import type { useRouter } from "next/navigation";
 import type { Minion } from "@/types/minion";
 
 interface MinionTableProps {
+  columnNames: string[];
   data: Minion[];
   handleDelete: (id: string) => void;
   router: ReturnType<typeof useRouter>;
 }
 
-export function MinionTable({ data, handleDelete, router }: MinionTableProps) {
+export function MinionTable({
+  columnNames,
+  data,
+  handleDelete,
+  router,
+}: MinionTableProps) {
   return (
     <Table isStriped aria-label="Tabla de Minions">
       <TableHeader>
-        <TableColumn className="bg-yellow-300 dark:bg-yellow-300 text-blue-700">
-          NOMBRE
-        </TableColumn>
-        <TableColumn className="bg-yellow-300 dark:bg-yellow-300 text-blue-700">
-          IDIOMA
-        </TableColumn>
-        <TableColumn className="bg-yellow-300 dark:bg-yellow-300 text-blue-700">
-          HABILIDAD
-        </TableColumn>
-        <TableColumn className="bg-yellow-300 dark:bg-yellow-300 text-blue-700">
-          ACCIONES
-        </TableColumn>
+        {columnNames.map((columnName: string) => (
+          <TableColumn
+            key={columnName}
+            className="bg-yellow-300 dark:bg-yellow-300 text-blue-700"
+          >
+            {columnName}
+          </TableColumn>
+        ))}
       </TableHeader>
       <TableBody className="divide-y">
         {data.map((minion: Minion) => (

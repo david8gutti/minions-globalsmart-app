@@ -1,6 +1,5 @@
 import { Button, Input, Select, SelectItem } from "@heroui/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import type { useRouter } from "next/navigation";
 
 interface MinionBarProps {
   languages: string[];

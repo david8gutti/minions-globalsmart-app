@@ -20,7 +20,8 @@ export default function MinionPage() {
 
   const [page, setPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 5;
-
+  const columnNames = ["NOMBRE", "IDIOMA", "HABILIDAD", "ACCIONES"];
+  
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [selectedSkill, setSelectedSkill] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,7 +58,6 @@ export default function MinionPage() {
     () => Array.from(new Set(minions.flatMap((m) => m.skills))),
     [minions],
   );
-
 
   // 🔹 Minions filtrados por búsqueda + filtros
   const filteredMinions = useMemo(() => {
@@ -132,7 +132,12 @@ export default function MinionPage() {
       />
 
       <div className="w-full max-w-6xl mx-auto">
-        <MinionTable data={paginatedMinions} handleDelete={handleDelete} router={router}/>
+        <MinionTable
+          columnNames={columnNames}
+          data={paginatedMinions}
+          handleDelete={handleDelete}
+          router={router}
+        />
         <DeleteModal
           isOpen={isDeleteOpen}
           onClose={() => setIsDeleteOpen(false)}

@@ -3,7 +3,7 @@
 import { Spinner } from "@heroui/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import MinionForm from "@/components/minionForm";
 import { updateMinion } from "@/redux/minionsSlice";
@@ -11,8 +11,8 @@ import type { AppDispatch } from "@/redux/store";
 import type { MinionDetail } from "@/types/minion";
 
 interface MinionDetailsProps {
-  params: { id: string };
-  searchParams?: { mode?: "edit" | "view" };
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{ mode?: "edit" | "view" }>;
 }
 
 export default function MinionDetails({
@@ -21,8 +21,14 @@ export default function MinionDetails({
 }: MinionDetailsProps) {
   const router = useRouter();
 
-  const { id } = params;
-  const mode = searchParams?.mode || "view";
+  //Nueva forma de obtener los params
+  const resolvedParams = use(params);
+  const resolvedSearchParams = use(
+    searchParams ?? Promise.resolve<{ mode?: "edit" | "view" }>({})
+  );
+
+  const { id } = resolvedParams;
+  const mode = resolvedSearchParams?.mode || "view";
   const [loading, setLoading] = useState(true);
 
   const [minionDetail, setMinionDetail] = useState<MinionDetail | null>(null);
@@ -90,6 +96,7 @@ export default function MinionDetails({
           alt="Cargando..."
           width={200}
           height={200}
+          priority
         />
         <Spinner color="warning" size="lg" />
       </div>

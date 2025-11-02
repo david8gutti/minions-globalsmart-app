@@ -40,7 +40,6 @@ export const fetchMinions = createAsyncThunk("minions/fetchAll", async () => {
     name: m.nombre ?? m.name ?? "",
     language: m.idioma ?? m.language ?? "",
     skills: m.habilidades ?? m.skills ?? [],
-    imageUrl: m.imageUrl ?? "",
   }));
 
   return allMinions as Minion[];
