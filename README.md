@@ -91,8 +91,7 @@ src/
 │       ├── minions/route.ts
 │       └── minionPic/route.ts
 │   ├── layout.tsx
-│   ├── providers.tsx
-│   └── globals.css
+│   └── providers.tsx
 │
 ├── components/
 │   ├── minionCard.tsx
@@ -108,7 +107,7 @@ src/
 ├── redux/
 │   ├── minionsSlice.tsx
 │   ├── store.ts
-│   └── StoreProvider.tsx
+│   └── storeProvider.tsx
 │
 ├── types/
 │   └── minion.ts
