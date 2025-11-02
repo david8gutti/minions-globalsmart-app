@@ -12,7 +12,7 @@ import type { MinionDetail } from "@/types/minion";
 
 interface MinionDetailsProps {
   params: Promise<{ id: string }>;
-  searchParams?: Promise<{ mode?: "edit" | "view" }>;
+  searchParams?: Promise<Partial<{ mode?: "edit" | "view" }>>;
 }
 
 export default function MinionDetails({
@@ -21,15 +21,17 @@ export default function MinionDetails({
 }: MinionDetailsProps) {
   const router = useRouter();
 
-  //Nueva forma de obtener los params
+  //Nueva forma de obtener los params con use()
   const resolvedParams = use(params);
   const resolvedSearchParams = use(
-    searchParams ?? Promise.resolve<{ mode?: "edit" | "view" }>({})
+    searchParams ?? Promise.resolve<{ mode?: "edit" | "view" }>({}),
   );
 
   const { id } = resolvedParams;
   const mode = resolvedSearchParams?.mode || "view";
+  
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [minionDetail, setMinionDetail] = useState<MinionDetail | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -45,7 +47,13 @@ export default function MinionDetails({
           fetch(`/api/minionPic?id=${id}`),
         ]);
 
+        if (!res.ok || !picRes.ok) {
+          throw new Error("Error al cargar datos del minion");
+        }
+
         const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
         const dataImage = await picRes.json();
 
         if (dataImage.image) {
@@ -57,9 +65,9 @@ export default function MinionDetails({
           name: data.nombre,
           language: data.idioma,
           skills: Array.isArray(data.habilidades) ? data.habilidades : [],
-          fecha_cumpleanos: new Date(data.fecha_cumpleanos * 1000)
-            .toISOString()
-            .slice(0, 10),
+          fecha_cumpleanos: data.fecha_cumpleanos
+            ? new Date(data.fecha_cumpleanos * 1000).toISOString().slice(0, 10)
+            : "",
           experiencia: data.experiencia,
           estado: data.estado,
           descripcion: data.descripcion,
@@ -72,6 +80,7 @@ export default function MinionDetails({
         setMinionDetail(fetched);
       } catch (error) {
         console.error("Error al cargar el minion:", error);
+        setError("No se pudo cargar la ficha del minion. Inténtalo más tarde.");
       } finally {
         setLoading(false);
       }
@@ -88,17 +97,40 @@ export default function MinionDetails({
     router.push("/");
   };
 
-  if (loading || !minionDetail) {
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen gap-6 text-red-600 font-bold">
+        <Image
+          src="/minion_error.gif"
+          alt="Error al cargar"
+          width={512}
+          height={512}
+          priority
+        />
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (loading) {
     return (
       <div className="flex flex-col justify-center items-center h-screen gap-6">
         <Image
           src="/minion_loading.gif"
-          alt="Cargando..."
+          alt="Cargando detalles del minion"
           width={200}
           height={200}
           priority
         />
         <Spinner color="warning" size="lg" />
+      </div>
+    );
+  }
+
+  if (!minionDetail) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen gap-6 text-red-600 font-bold">
+        <p>No se encontró la ficha del minion.</p>
       </div>
     );
   }

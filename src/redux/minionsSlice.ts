@@ -1,3 +1,13 @@
+// Slice: minionsSlice
+// Gestiona el estado global de los Minions en la aplicación (Redux Toolkit).
+// Incluye lógica para obtener, agregar, actualizar y eliminar minions.
+//
+// 👉 Decisiones de diseño:
+// - Se usa `createAsyncThunk` para centralizar la lógica de fetching y mantener el código limpio.
+// - La transformación de datos se realiza tras la petición para unificar formatos (API puede devolver campos con nombres distintos).
+// - Se gestiona el estado (`status`) y un flag `loaded` para controlar cuándo los datos están disponibles.
+//
+
 import {
   createAsyncThunk,
   createSlice,
@@ -17,6 +27,13 @@ const initialState: MinionsState = {
   status: "pending",
   loaded: false,
 };
+
+// Thunk asíncrono para obtener todos los Minions de la API proporcionada por GlobalSmart
+// - Hace una primera petición a `/api/minions?page=1`.
+// - Si hay más páginas, realiza llamadas adicionales en paralelo.
+// - Combina todos los resultados en un solo array.
+// - Se ha elegido esta opción debido a que así existe la posibilidad de trabajar con todos los datos
+//  de manera mas comoda, y poder obtener TODOS los filtros
 
 export const fetchMinions = createAsyncThunk("minions/fetchAll", async () => {
   const res = await fetch("/api/minions?page=1");

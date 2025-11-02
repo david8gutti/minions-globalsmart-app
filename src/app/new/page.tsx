@@ -30,11 +30,12 @@ export default function MinionNew() {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleBack = () => router.push("/");
+
   const handleSubmit = (formData: MinionDetail, e: React.FormEvent) => {
     e.preventDefault();
     const newMinion = {
       ...formData,
-      id: uuid4(),
+      id: uuid4(), //He escogido UUID para poder añadirle una ID al "minion"
       skills: Array.isArray(formData.skills) ? formData.skills : [],
     };
     dispatch(addMinion(newMinion));

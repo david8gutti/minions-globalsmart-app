@@ -1,3 +1,11 @@
+/**
+ * normalizeText
+ * -------------------------
+ * Normaliza una cadena de texto eliminando acentos, espacios sobrantes
+ * y convirtiéndola a minúsculas.
+ *
+ */
+
 export const normalizeText = (str: string) =>
   str
     .trim()

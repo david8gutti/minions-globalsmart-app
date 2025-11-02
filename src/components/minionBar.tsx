@@ -1,6 +1,20 @@
 import { Button, Input, Select, SelectItem } from "@heroui/react";
 import type { useRouter } from "next/navigation";
 
+// Componente: MinionBar
+// Renderiza una barra de búsqueda y filtrado para la lista de Minions.
+// Permite buscar por nombre, filtrar por idioma y seleccionar múltiples habilidades.
+// 
+// Props:
+// - languages: lista de idiomas disponibles para el filtro.
+// - skills: lista de habilidades disponibles para selección múltiple.
+// - selectedLanguage: idioma actualmente seleccionado.
+// - selectedSkill: array con las habilidades seleccionadas.
+// - searchTerm: texto de búsqueda introducido por el usuario.
+// - router: instancia del hook useRouter (para redirecciones).
+// - setSelectedLanguage / setSelectedSkill / setSearchTerm: setters para actualizar los filtros.
+
+
 interface MinionBarProps {
   languages: string[];
   skills: string[];
@@ -10,7 +24,7 @@ interface MinionBarProps {
   router: ReturnType<typeof useRouter>;
   setSelectedLanguage: (lang: string) => void;
   setSelectedSkill: (skill: string[]) => void;
-  setSearchTerm: (skill: string) => void;
+  setSearchTerm: (term: string) => void;
 }
 
 export function MinionBar({
@@ -30,6 +44,7 @@ export function MinionBar({
         <Input
           size="lg"
           id="search"
+          aria-label="Buscar"
           type="text"
           placeholder="🔎 Buscar por palabra clave"
           value={searchTerm}
@@ -70,17 +85,15 @@ export function MinionBar({
         </Select>
       </div>
       <div>
-
-          <Button
-            className="dark:bg-yellow-300 bg-yellow-300 border-3 border-solid border-blue-700 w-full"
-            size="lg"
-            radius="sm"
-            onPress={() => router.push("/new")}
-          >
-            <span className="text-blue-700 font-bold">
-              + Añadir nuevo minion
-            </span>
-          </Button>
+        <Button
+          className="dark:bg-yellow-400 bg-yellow-300 border-3 border-solid border-blue-700 w-full"
+          size="lg"
+          aria-label="Añadir nuevo minion"
+          radius="sm"
+          onPress={() => router.push("/new")}
+        >
+          <span className="text-blue-700 font-bold">+ Añadir nuevo minion</span>
+        </Button>
       </div>
     </div>
   );

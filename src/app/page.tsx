@@ -3,41 +3,53 @@
 import { Alert, Pagination } from "@heroui/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { DeleteModal } from "@/components/deleteModal";
 import { MinionBar } from "@/components/minionBar";
 import { MinionTable } from "@/components/minionTable";
+import { ThemeSwitcher } from "@/components/themeSwitcher";
+import { useFilteredMinions } from "@/hooks/useFilteredMinions";
 import { useMinions } from "@/hooks/useMinions";
 import { deleteMinion } from "@/redux/minionsSlice";
 import type { AppDispatch } from "@/redux/store";
-import { normalizeText } from "@/utils/string";
 
 export default function MinionPage() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const { minions, status } = useMinions();
+  const { minions, status, error } = useMinions();
 
-  const [page, setPage] = useState<number>(1);
-  const ITEMS_PER_PAGE = 5;
   const columnNames = ["NOMBRE", "IDIOMA", "HABILIDAD", "ACCIONES"];
-  
+
+  //Filtros
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [selectedSkill, setSelectedSkill] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  //Modales, alertas
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [minionToDelete, setMinionToDelete] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
 
-  const onPageChange = (page: number) => setPage(page);
+    const { paginatedMinions, totalPages, page, setPage } = useFilteredMinions(
+    minions,
+    selectedLanguage,
+    selectedSkill,
+    searchTerm,
+    5,
+  );
 
-  const handleDelete = (id: string) => {
+  // USECALLBACK:
+  // Handlers que se le pasa a componente hijo para evitar
+  //su re-renderizado 
+  const handleDelete = useCallback((id: string) => {
     setMinionToDelete(id);
-    setIsDeleteOpen(true);
-  };
+    setIsDeleteOpen(true); //Modal de eliminacion abierto
+  }, []);
 
-  const confirmDelete = () => {
+  const handleConfirmDelete = useCallback(() => {
+    //Si existe el id, procede a borrar el minion, cerrar el modal
+    //y después mostrar la alerta
     if (minionToDelete) {
       dispatch(deleteMinion(minionToDelete));
       setMinionToDelete(null);
@@ -46,10 +58,11 @@ export default function MinionPage() {
       setShowAlert(true);
       setTimeout(() => setShowAlert(false), 2500);
     }
-  };
+  }, [dispatch, minionToDelete]);
 
-  // Filtros dinamicos
-  /* Solo recalcula cuando cambian las dependencias */
+  // USEMEMO:
+  // Extrae y memoriza los valores unicos, se recalculan solo
+  //si cambia la lista de minions
   const languages = useMemo(
     () => Array.from(new Set(minions.map((m) => m.language))),
     [minions],
@@ -59,43 +72,6 @@ export default function MinionPage() {
     [minions],
   );
 
-  // 🔹 Minions filtrados por búsqueda + filtros
-  const filteredMinions = useMemo(() => {
-    const normalizedSearch = normalizeText(searchTerm);
-
-    return minions.filter((m) => {
-      const languageMatch = selectedLanguage
-        ? m.language === selectedLanguage
-        : true;
-
-      const skillMatch =
-        selectedSkill.length > 0
-          ? selectedSkill.every((skill) =>
-              m.skills.some((s) => normalizeText(s) === normalizeText(skill)),
-            )
-          : true;
-
-      const searchMatch =
-        !normalizedSearch ||
-        normalizeText(m.name).includes(normalizedSearch) ||
-        normalizeText(m.language).includes(normalizedSearch) ||
-        m.skills.some((s) => normalizeText(s).includes(normalizedSearch));
-
-      return languageMatch && skillMatch && searchMatch;
-    });
-  }, [minions, selectedLanguage, selectedSkill, searchTerm]);
-
-  const paginatedMinions = useMemo(() => {
-    const start = (page - 1) * ITEMS_PER_PAGE;
-    return filteredMinions.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredMinions, page]);
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredMinions.length / ITEMS_PER_PAGE),
-  );
-
-  // 🔹 Mostrar loading
   if (status === "pending") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
@@ -111,11 +87,24 @@ export default function MinionPage() {
     );
   }
 
-  if (status === "rejected") return <p>Error cargando minions</p>;
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen gap-6 text-red-600 font-bold">
+        <Image
+          src="/minion_error.gif"
+          alt="Error al cargar"
+          width={512}
+          height={512}
+          priority
+        />
+        <p>Error al cargar</p>
+      </div>
+    );
+  }
 
   return (
     <div className="place-items-center m-50">
-      <h1 className="text-4xl font-bold text-blue-700 mb-10">
+      <h1 className="text-4xl font-bold text-blue-700 dark:text-blue-400 mb-10">
         Gestión de Minions
       </h1>
 
@@ -141,7 +130,7 @@ export default function MinionPage() {
         <DeleteModal
           isOpen={isDeleteOpen}
           onClose={() => setIsDeleteOpen(false)}
-          onConfirm={confirmDelete}
+          onConfirm={handleConfirmDelete}
           title="Eliminar Minion"
           message="¿Seguro que quieres eliminar este Minion?"
         />
@@ -154,7 +143,7 @@ export default function MinionPage() {
             }}
             page={page}
             total={totalPages}
-            onChange={onPageChange}
+            onChange={setPage}
           />
         </div>
         {showAlert && (
@@ -162,6 +151,9 @@ export default function MinionPage() {
             <Alert color="success" title="Minion eliminado con éxito" />
           </div>
         )}
+      </div>
+      <div className="mt-15">
+        <ThemeSwitcher/>
       </div>
     </div>
   );
