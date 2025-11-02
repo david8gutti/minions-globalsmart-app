@@ -33,13 +33,35 @@ La aplicación estará disponible en:
 
 ---
 
+## 🔑 Configuración de entorno
+
+Este proyecto utiliza variables de entorno para definir la URL base de la API de Minions.
+
+1. Copia el archivo `.env.example` a `.env.local`:
+
+```bash
+cp .env.example .env.local
+```
+
+2. Completa los valores necesarios en `.env.local`.  
+   Ejemplo:
+
+```env
+# URL base de la API de JSONPlaceholder
+NEXT_PUBLIC_API_URL=https://jsonplaceholder.typicode.com
+```
+
+---
+
 ## 🛠️ Tecnologías principales
 
 - **Next.js 15** – Framework de React para SSR y SSG  
 - **React 19** – Librería base de la UI  
 - **Redux Toolkit + React Redux** – Gestión de estado global  
 - **TailwindCSS 4** – Estilos  
-- **HeroUI + Heroicons** – Componentes y librerías de iconos  
+- **HeroUI + Heroicons** – Componentes y librerías de iconos
+- **HeroUI + Heroicons + React Icons** – Componentes e iconos  
+- **Framer Motion** – Animaciones fluidas  
 
 ---
 
@@ -58,38 +80,46 @@ La aplicación estará disponible en:
 
 ---
 
-## 🧩 Custom Hook
-
-Se implementó un hook personalizado:
-
-### `useMinion`
-
-Encapsula la lógica de gestión de Minions (filtros, búsqueda y sincronización con Redux).  
-Este hook permite reutilizar la lógica en distintos componentes y evita duplicación de código.
-
----
-
 ## 📂 Estructura del proyecto
 
 ```bash
+src/
 ├── app/
-│   ├── page.tsx          # Página principal con listado y filtros
-│   ├── minion/[id].tsx   # Vista de detalle/edición de un Minion
+│   ├── page.tsx              # Página principal con listado y filtros
+│   ├── new/page.tsx          # Vista para crear un nuevo Minion
+│   ├── [id]/page.tsx         # Vista de detalle/edición de un Minion
+│   ├── api/               # Endpoints de API internos
+│       ├── minion/route.ts
+│       ├── minions/route.ts
+│       └── minionPic/route.ts
+│   ├── layout.tsx
+│   ├── providers.tsx
+│   └── globals.css
 │
 ├── components/
-│   ├── MinionCard.tsx    # Tarjeta individual de Minion
-│   ├── MinionForm.tsx    # Formulario de creación/edición
-│   ├── Filters.tsx       # Filtros por idioma y habilidades
+│   ├── minionCard.tsx
+│   ├── minionForm.tsx
+│   ├── minionTable.tsx
+│   ├── deleteModal.tsx
+│   └── themeSwitcher.tsx
 │
 ├── hooks/
-│   └── useMinion.ts      # Custom hook para lógica de Minions
+│   ├── useMinions.tsx
+│   └── useFilteredMinions.tsx
 │
-├── store/
-│   ├── index.ts          # Configuración de Redux store
-│   └── minionsSlice.ts   # Reducer y acciones de Minions
+├── redux/
+│   ├── minionsSlice.tsx
+│   ├── store.ts
+│   └── StoreProvider.tsx
+│
+├── types/
+│   └── minion.ts
 │
 ├── styles/
-│   └── globals.css       # Estilos globales con Tailwind
+│   └── globals.css
+│
+└── utils/
+    └── string.ts
 ```
 
 ---
@@ -106,15 +136,6 @@ Este hook permite reutilizar la lógica en distintos componentes y evita duplica
   - `useEffect` → fetch de datos y sincronización  
   - `useMemo` → optimización de filtros  
   - `useCallback` → funciones memorizadas para evitar renders innecesarios  
-
----
-
-## 🧪 Ejemplo de uso
-
-- Filtrar Minions por idioma: selecciona "Minionés Español"  
-- Filtrar por habilidades: marca "Mecánico" y "Químico"  
-- Buscar por nombre: escribe "Kevin" en el buscador  
-- Crear un nuevo Minion: botón **+ Añadir nuevo Minion**  
 
 ---
 

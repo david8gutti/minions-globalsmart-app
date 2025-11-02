@@ -1,15 +1,11 @@
-import { StoreProvider } from "@/redux/StoreProvider";
-import "./globals.css";
-import { Metadata } from "next";
+import { StoreProvider } from "@/redux/storeProvider";
+import "../styles/globals.css"
+import type { Metadata } from "next";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "Minion Dashboard",
-  description: "Creado para GlobalSmart",
-  icons: {
-    icon: "/minion_favico.ico", // ruta en la carpeta public
-    shortcut: "/minion_favicon.ico"
-  },
+  description: "Creado para GlobalSmart"
 };
 
 export default function RootLayout({

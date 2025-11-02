@@ -1,4 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+
+//NOTA: Este endpoint para la misma ID, genera la foto
+// de un minion aleatoriamente
 
 export async function GET(req: NextRequest) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
