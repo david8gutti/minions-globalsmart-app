@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦹‍♂️ Gestión de Minions – Proyecto Técnico
 
-## Getting Started
+Este proyecto es una aplicación desarrollada con **Next.js** y **Redux** para la gestión de Minions.  
+Forma parte de una prueba técnica cuyo objetivo es organizar, filtrar y administrar Minions con distintas habilidades e idiomas, permitiendo además realizar operaciones CRUD (crear, editar, eliminar) sobre ellos.
 
-First, run the development server:
+---
+
+## 🚀 Requisitos previos
+
+- [Node.js](https://nodejs.org/) (v18 o superior recomendado)  
+- npm, yarn, pnpm o bun como gestor de paquetes  
+
+---
+
+## ⚙️ Instalación y ejecución
+
+Clona el repositorio e instala las dependencias:
+
+```bash
+git clone <url-del-repo>
+cd gestion-minions
+npm install
+```
+
+Ejecuta el servidor de desarrollo:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La aplicación estará disponible en:  
+👉 [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tecnologías principales
 
-## Learn More
+- **Next.js 15** – Framework de React para SSR y SSG  
+- **React 19** – Librería base de la UI  
+- **Redux Toolkit + React Redux** – Gestión de estado global  
+- **TailwindCSS 4** – Estilos  
+- **HeroUI + Heroicons** – Componentes y librerías de iconos  
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📌 Funcionalidades implementadas
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Listado de Minions** con paginación desde API  
+- **Filtros combinados** por:
+  - Idioma (selección única)  
+  - Habilidades (selección múltiple)  
+  - Buscador por nombre (case-insensitive)  
+- **Vista de detalle** de cada Minion  
+- **Edición de Minions** con formulario editable  
+- **Creación de nuevos Minions** desde cero  
+- **Eliminación con confirmación** antes de borrar del store  
+- **Gestión de estado con Redux** (todos los cambios se mantienen en la sesión)  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧩 Custom Hook
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Se implementó un hook personalizado:
+
+### `useMinion`
+
+Encapsula la lógica de gestión de Minions (filtros, búsqueda y sincronización con Redux).  
+Este hook permite reutilizar la lógica en distintos componentes y evita duplicación de código.
+
+---
+
+## 📂 Estructura del proyecto
+
+```bash
+├── app/
+│   ├── page.tsx          # Página principal con listado y filtros
+│   ├── minion/[id].tsx   # Vista de detalle/edición de un Minion
+│
+├── components/
+│   ├── MinionCard.tsx    # Tarjeta individual de Minion
+│   ├── MinionForm.tsx    # Formulario de creación/edición
+│   ├── Filters.tsx       # Filtros por idioma y habilidades
+│
+├── hooks/
+│   └── useMinion.ts      # Custom hook para lógica de Minions
+│
+├── store/
+│   ├── index.ts          # Configuración de Redux store
+│   └── minionsSlice.ts   # Reducer y acciones de Minions
+│
+├── styles/
+│   └── globals.css       # Estilos globales con Tailwind
+```
+
+---
+
+## 📖 Notas de implementación
+
+- Los datos se cargan desde la API:  
+  - `GET /getMinions?page=<número>`  
+  - `GET /getMinion?id=<id>`  
+  - `GET /getMinionPic?id=<id>`  
+- Los cambios (crear, editar, eliminar) **solo se reflejan en Redux**, no en la API.  
+- Se usaron **hooks de React**:  
+  - `useState` → estados locales de UI  
+  - `useEffect` → fetch de datos y sincronización  
+  - `useMemo` → optimización de filtros  
+  - `useCallback` → funciones memorizadas para evitar renders innecesarios  
+
+---
+
+## 🧪 Ejemplo de uso
+
+- Filtrar Minions por idioma: selecciona "Minionés Español"  
+- Filtrar por habilidades: marca "Mecánico" y "Químico"  
+- Buscar por nombre: escribe "Kevin" en el buscador  
+- Crear un nuevo Minion: botón **+ Añadir nuevo Minion**  
+
+---
+

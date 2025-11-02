@@ -51,8 +51,7 @@ export const minionsSlice = createSlice({
   initialState,
   reducers: {
     addMinion: (state, action: PayloadAction<Minion>) => {
-      state.minions.push(action.payload);
-      console.log(state.minions);
+      state.minions.unshift(action.payload);
     },
     updateMinion: (state, action: PayloadAction<Minion>) => {
       const index = state.minions.findIndex((m) => m.id === action.payload.id);

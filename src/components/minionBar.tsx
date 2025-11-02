@@ -1,5 +1,6 @@
 import { Button, Input, Select, SelectItem } from "@heroui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface MinionBarProps {
   languages: string[];
@@ -7,6 +8,7 @@ interface MinionBarProps {
   selectedLanguage: string;
   selectedSkill: string[];
   searchTerm: string;
+  router: ReturnType<typeof useRouter>;
   setSelectedLanguage: (lang: string) => void;
   setSelectedSkill: (skill: string[]) => void;
   setSearchTerm: (skill: string) => void;
@@ -18,6 +20,7 @@ export function MinionBar({
   selectedLanguage,
   selectedSkill,
   searchTerm,
+  router,
   setSelectedLanguage,
   setSelectedSkill,
   setSearchTerm,
@@ -68,17 +71,17 @@ export function MinionBar({
         </Select>
       </div>
       <div>
-        <Link href={`/new`}>
+
           <Button
             className="dark:bg-yellow-300 bg-yellow-300 border-3 border-solid border-blue-700 w-full"
             size="lg"
             radius="sm"
+            onPress={() => router.push("/new")}
           >
             <span className="text-blue-700 font-bold">
               + Añadir nuevo minion
             </span>
           </Button>
-        </Link>
       </div>
     </div>
   );

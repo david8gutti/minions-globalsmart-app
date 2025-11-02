@@ -1,5 +1,6 @@
 "use client";
 
+import { Spinner } from "@heroui/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -33,10 +34,12 @@ export default function MinionDetails({
 
     const fetchMinion = async () => {
       try {
-        const res = await fetch(`/api/minion?id=${id}`);
-        const data = await res.json();
+        const [res, picRes] = await Promise.all([
+          fetch(`/api/minion?id=${id}`),
+          fetch(`/api/minionPic?id=${id}`),
+        ]);
 
-        const picRes = await fetch(`/api/minionPic?id=${id}`);
+        const data = await res.json();
         const dataImage = await picRes.json();
 
         if (dataImage.image) {
@@ -47,7 +50,7 @@ export default function MinionDetails({
           id: data.id,
           name: data.nombre,
           language: data.idioma,
-          skills: data.habilidades,
+          skills: Array.isArray(data.habilidades) ? data.habilidades : [],
           fecha_cumpleanos: new Date(data.fecha_cumpleanos * 1000)
             .toISOString()
             .slice(0, 10),
@@ -71,29 +74,24 @@ export default function MinionDetails({
     fetchMinion();
   }, [id]);
 
-  const handleBack = () => router.push("/")
+  const handleBack = () => router.push("/");
 
   const handleSubmit = (formData: MinionDetail, e: React.FormEvent) => {
-    console.log(e);
     e.preventDefault();
-
-    console.log("Formulario enviado:", formData);
-    const newMinion = {
-      ...formData,
-    };
-    dispatch(updateMinion(newMinion));
+    dispatch(updateMinion(formData));
     router.push("/");
   };
 
   if (loading || !minionDetail) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex flex-col justify-center items-center h-screen gap-6">
         <Image
           src="/minion_loading.gif"
           alt="Cargando..."
-          width={256}
-          height={256}
+          width={200}
+          height={200}
         />
+        <Spinner color="warning" size="lg" />
       </div>
     );
   }

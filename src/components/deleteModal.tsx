@@ -1,9 +1,16 @@
 "use client";
 
-import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+} from "@heroui/react";
 
 interface DeleteModalProps {
-  show: boolean;
+  isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   title?: string;
@@ -11,31 +18,29 @@ interface DeleteModalProps {
 }
 
 export function DeleteModal({
-  show,
+  isOpen,
   onClose,
   onConfirm,
-  title = "Eliminar elemento",
-  message = "¿Seguro que quieres eliminar este elemento?",
+  title,
+  message,
 }: DeleteModalProps) {
-/*   return (
-    <Modal show={show} size="md" onClose={onClose} popup>
-      <ModalHeader />
-      <ModalBody>
-        <div className="text-center">
-          <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-          <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-            {message}
-          </h3>
-          <div className="flex justify-center gap-4">
-            <Button color="red" onClick={onConfirm}>
-              Sí, eliminar
-            </Button>
-            <Button color="alternative" onClick={onClose}>
-              Cancelar
-            </Button>
+  return (
+    <Modal isOpen={isOpen} size="md" onClose={onClose}>
+      <ModalContent>
+        <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
+        <ModalBody>
+          <div className="text-center">
+            <ExclamationCircleIcon className="mx-auto mb-3 h-15 w-15 text-gray-500 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              {message}
+            </h3>
+            <div className="flex justify-center gap-4 mb-5">
+              <Button color="danger" onPress={onConfirm}>Sí, eliminar</Button>
+              <Button onPress={onClose}>Cancelar</Button>
+            </div>
           </div>
-        </div>
-      </ModalBody>
+        </ModalBody>
+      </ModalContent>
     </Modal>
-  ); */
+  );
 }

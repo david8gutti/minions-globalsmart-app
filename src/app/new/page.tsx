@@ -10,17 +10,17 @@ import type { MinionDetail } from "@/types/minion";
 
 export default function MinionNew() {
   const initialForm: MinionDetail = {
-    id: uuid4(),
+    id: "",
     name: "",
     language: "",
     skills: [],
     imageUrl: "",
     fecha_cumpleanos: "",
-    experiencia: "0",
+    experiencia: 0,
     estado: "",
     descripcion: "",
-    numero_ojos: "2",
-    altura: "100",
+    numero_ojos: 2,
+    altura: 100,
     comida_favorita: "",
     personalidad: "",
   };
@@ -34,6 +34,7 @@ export default function MinionNew() {
     e.preventDefault();
     const newMinion = {
       ...formData,
+      id: uuid4(),
       skills: Array.isArray(formData.skills) ? formData.skills : [],
     };
     dispatch(addMinion(newMinion));

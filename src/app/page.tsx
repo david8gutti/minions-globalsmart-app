@@ -1,17 +1,21 @@
 "use client";
 
-import { Pagination } from "@heroui/react";
+import { Alert, Pagination } from "@heroui/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import { DeleteModal } from "@/components/deleteModal";
 import { MinionBar } from "@/components/minionBar";
 import { MinionTable } from "@/components/minionTable";
 import { useMinions } from "@/hooks/useMinions";
 import { deleteMinion } from "@/redux/minionsSlice";
 import type { AppDispatch } from "@/redux/store";
+import { normalizeText } from "@/utils/string";
 
 export default function MinionPage() {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const { minions, status } = useMinions();
 
   const [page, setPage] = useState<number>(1);
@@ -21,13 +25,25 @@ export default function MinionPage() {
   const [selectedSkill, setSelectedSkill] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [minionToDelete, setMinionToDelete] = useState<string | null>(null);
+  const [showAlert, setShowAlert] = useState(false);
+
   const onPageChange = (page: number) => setPage(page);
 
-  const handleDelete = async (id: string) => {
-    try {
-      dispatch(deleteMinion(id));
-    } catch (error) {
-      console.error("Error eliminando minion:", error);
+  const handleDelete = (id: string) => {
+    setMinionToDelete(id);
+    setIsDeleteOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (minionToDelete) {
+      dispatch(deleteMinion(minionToDelete));
+      setMinionToDelete(null);
+      setIsDeleteOpen(false);
+
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 2500);
     }
   };
 
@@ -42,12 +58,6 @@ export default function MinionPage() {
     [minions],
   );
 
-  const normalizeText = (str: string) =>
-    str
-      .trim()
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
 
   // 🔹 Minions filtrados por búsqueda + filtros
   const filteredMinions = useMemo(() => {
@@ -80,7 +90,7 @@ export default function MinionPage() {
     return filteredMinions.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredMinions, page]);
 
-  const totalPagesFrontend = Math.max(
+  const totalPages = Math.max(
     1,
     Math.ceil(filteredMinions.length / ITEMS_PER_PAGE),
   );
@@ -92,7 +102,7 @@ export default function MinionPage() {
         <Image
           src={"/minion_spinner.gif"}
           className="place-items-center"
-          alt="Minion...."
+          alt="Cargando lista de minions"
           width={512}
           height={512}
           priority
@@ -115,23 +125,38 @@ export default function MinionPage() {
         selectedLanguage={selectedLanguage}
         selectedSkill={selectedSkill}
         searchTerm={searchTerm}
+        router={router}
         setSelectedLanguage={setSelectedLanguage}
         setSelectedSkill={setSelectedSkill}
         setSearchTerm={setSearchTerm}
       />
 
       <div className="w-full max-w-6xl mx-auto">
-        <MinionTable data={paginatedMinions} handleDelete={handleDelete} />
+        <MinionTable data={paginatedMinions} handleDelete={handleDelete} router={router}/>
+        <DeleteModal
+          isOpen={isDeleteOpen}
+          onClose={() => setIsDeleteOpen(false)}
+          onConfirm={confirmDelete}
+          title="Eliminar Minion"
+          message="¿Seguro que quieres eliminar este Minion?"
+        />
+
         <div className="flex sm:justify-center mt-5">
           <Pagination
             classNames={{
-              cursor:"bg-yellow-400 text-black font-bold border border-blue-700 shadow-md",
+              cursor:
+                "bg-yellow-400 text-black font-bold border border-blue-700 shadow-md",
             }}
-            initialPage={page}
-            total={totalPagesFrontend}
+            page={page}
+            total={totalPages}
             onChange={onPageChange}
           />
         </div>
+        {showAlert && (
+          <div className="mt-15">
+            <Alert color="success" title="Minion eliminado con éxito" />
+          </div>
+        )}
       </div>
     </div>
   );

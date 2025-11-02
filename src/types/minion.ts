@@ -8,11 +8,11 @@ export interface Minion {
 
 export interface MinionDetail extends Minion {
   fecha_cumpleanos: string;
-  experiencia: string;
+  experiencia: number;
   estado: string;
   descripcion: string;
-  numero_ojos: string;
-  altura: string;
+  numero_ojos: number;
+  altura: number;
   comida_favorita: string;
   personalidad: string;
 }
