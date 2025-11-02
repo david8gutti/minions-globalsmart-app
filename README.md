@@ -59,7 +59,7 @@ NEXT_PUBLIC_API_URL=https://jsonplaceholder.typicode.com
 - **Redux Toolkit + React Redux** – Gestión de estado global  
 - **TailwindCSS 4** – Estilos  
 - **HeroUI + Heroicons** – Componentes y librerías de iconos  
-- **Framer Motion** – Animaciones fluidas  
+- **Biome** – Análisis y formateo del codigo  
 
 ---
 
