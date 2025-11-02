@@ -1,4 +1,4 @@
-# 🦹‍♂️ Gestión de Minions – Proyecto Técnico
+# 🦹‍♂️ Gestión de Minions
 
 Este proyecto es una aplicación desarrollada con **Next.js** y **Redux** para la gestión de Minions.  
 Forma parte de una prueba técnica cuyo objetivo es organizar, filtrar y administrar Minions con distintas habilidades e idiomas, permitiendo además realizar operaciones CRUD (crear, editar, eliminar) sobre ellos.
@@ -18,7 +18,7 @@ Clona el repositorio e instala las dependencias:
 
 ```bash
 git clone <url-del-repo>
-cd gestion-minions
+cd minions-globalsmart-app
 npm install
 ```
 
@@ -55,12 +55,10 @@ NEXT_PUBLIC_API_URL=https://jsonplaceholder.typicode.com
 
 ## 🛠️ Tecnologías principales
 
-- **Next.js 15** – Framework de React para SSR y SSG  
-- **React 19** – Librería base de la UI  
+- **Next.js 15** – Framework de React para SSR y SSG   
 - **Redux Toolkit + React Redux** – Gestión de estado global  
 - **TailwindCSS 4** – Estilos  
-- **HeroUI + Heroicons** – Componentes y librerías de iconos
-- **HeroUI + Heroicons + React Icons** – Componentes e iconos  
+- **HeroUI + Heroicons** – Componentes y librerías de iconos  
 - **Framer Motion** – Animaciones fluidas  
 
 ---
